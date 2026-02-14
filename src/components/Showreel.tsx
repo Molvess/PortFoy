@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import VideoCard from './VideoCard';
 import SectionWrapper from './SectionWrapper';
 import { databases, DATABASE_ID, VIDEOS_COLLECTION_ID, Query } from '../lib/appwrite';
-import { isVideoHidden } from '../lib/hiddenFallbacks';
+import { getLocalVideos, getHiddenIds } from '../lib/localStore';
 import type { Video } from '../types';
 
 // Fallback demo data — Appwrite bağlantısı yoksa
@@ -40,6 +40,10 @@ export default function Showreel() {
 
   useEffect(() => {
     const fetchVideos = async () => {
+      const hidden = getHiddenIds();
+      const localVids = getLocalVideos().filter((v) => v.category === 'portfolio');
+      const visibleFallbacks = fallbackVideos.filter((v) => !hidden.includes('fb-v' + v.$id!));
+
       try {
         const res = await databases.listDocuments(DATABASE_ID, VIDEOS_COLLECTION_ID, [
           Query.equal('category', 'portfolio'),
@@ -53,10 +57,9 @@ export default function Showreel() {
           category: d.category as Video['category'],
           thumbnailUrl: d.thumbnailUrl as string | undefined,
         }));
-        const visibleFallbacks = fallbackVideos.filter((v) => !isVideoHidden(v.$id!));
-        setVideos(docs.length > 0 ? docs : visibleFallbacks);
+        setVideos([...docs, ...localVids, ...(docs.length === 0 ? visibleFallbacks : [])]);
       } catch {
-        setVideos(fallbackVideos.filter((v) => !isVideoHidden(v.$id!)));
+        setVideos([...localVids, ...visibleFallbacks]);
       } finally {
         setLoading(false);
       }

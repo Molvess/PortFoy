@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import ProjectCard from './ProjectCard';
 import SectionWrapper from './SectionWrapper';
 import { databases, DATABASE_ID, PROJECTS_COLLECTION_ID, Query } from '../lib/appwrite';
-import { isProjectHidden } from '../lib/hiddenFallbacks';
+import { getLocalProjects, getHiddenIds } from '../lib/localStore';
 import type { Project } from '../types';
 
 // Fallback demo data
@@ -64,6 +64,10 @@ export default function Projects() {
 
   useEffect(() => {
     const fetchProjects = async () => {
+      const hidden = getHiddenIds();
+      const localProjs = getLocalProjects();
+      const visibleFallbacks = fallbackProjects.filter((p) => !hidden.includes('fb-p' + p.$id!));
+
       try {
         const res = await databases.listDocuments(DATABASE_ID, PROJECTS_COLLECTION_ID, [
           Query.orderDesc('$createdAt'),
@@ -77,10 +81,9 @@ export default function Projects() {
           demoUrl: d.demoUrl as string | undefined,
           tags: (d.tags as string[]) || [],
         }));
-        const visibleFallbacks = fallbackProjects.filter((p) => !isProjectHidden(p.$id!));
-        setProjects(docs.length > 0 ? docs : visibleFallbacks);
+        setProjects([...docs, ...localProjs, ...(docs.length === 0 ? visibleFallbacks : [])]);
       } catch {
-        setProjects(fallbackProjects.filter((p) => !isProjectHidden(p.$id!)));
+        setProjects([...localProjs, ...visibleFallbacks]);
       } finally {
         setLoading(false);
       }

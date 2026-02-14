@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import ReactPlayer from 'react-player';
 import SectionWrapper from './SectionWrapper';
 import { databases, DATABASE_ID, VIDEOS_COLLECTION_ID, Query } from '../lib/appwrite';
-import { isContentHidden } from '../lib/hiddenFallbacks';
+import { getLocalVideos, getHiddenIds } from '../lib/localStore';
 import type { Video } from '../types';
 import { HiPlay } from 'react-icons/hi';
 
@@ -36,6 +36,10 @@ export default function ContentCreator() {
 
   useEffect(() => {
     const fetchContent = async () => {
+      const hidden = getHiddenIds();
+      const localVids = getLocalVideos().filter((v) => v.category === 'content_creator');
+      const visibleFallbacks = fallbackContent.filter((v) => !hidden.includes('fb-' + v.$id!));
+
       try {
         const res = await databases.listDocuments(DATABASE_ID, VIDEOS_COLLECTION_ID, [
           Query.equal('category', 'content_creator'),
@@ -49,10 +53,9 @@ export default function ContentCreator() {
           category: d.category as Video['category'],
           thumbnailUrl: d.thumbnailUrl as string | undefined,
         }));
-        const visibleFallbacks = fallbackContent.filter((v) => !isContentHidden(v.$id!));
-        setVideos(docs.length > 0 ? docs : visibleFallbacks);
+        setVideos([...docs, ...localVids, ...(docs.length === 0 ? visibleFallbacks : [])]);
       } catch {
-        setVideos(fallbackContent.filter((v) => !isContentHidden(v.$id!)));
+        setVideos([...localVids, ...visibleFallbacks]);
       } finally {
         setLoading(false);
       }
