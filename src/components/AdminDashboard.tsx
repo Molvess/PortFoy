@@ -407,8 +407,8 @@ export default function AdminDashboard() {
       <header className="border-b border-white/5 bg-dark-secondary">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-neon-purple to-neon-blue overflow-hidden">
-              <img src="/MlogoSiyah.png" alt="Molvess" className="h-7 w-7 object-contain" />
+            <div className="flex h-9 w-9 items-center justify-center overflow-hidden">
+              <img src="/MlogoSiyah.png" alt="Molvess" className="h-9 w-9 object-contain" />
             </div>
             <div>
               <h1 className="font-heading text-lg font-bold text-white">Admin Dashboard</h1>

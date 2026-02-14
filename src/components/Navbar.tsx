@@ -51,8 +51,8 @@ export default function Navbar() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-neon-purple to-neon-blue overflow-hidden">
-              <img src="/MlogoSiyah.png" alt="Molvess" className="h-7 w-7 object-contain" />
+            <div className="flex h-9 w-9 items-center justify-center overflow-hidden">
+              <img src="/MlogoSiyah.png" alt="Molvess" className="h-9 w-9 object-contain" />
             </div>
             <span className="font-heading text-xl font-bold tracking-tight text-white">
               Molvess

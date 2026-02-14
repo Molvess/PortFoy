@@ -9,8 +9,8 @@ export default function Footer() {
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
           {/* Left — Branding */}
           <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-neon-purple to-neon-blue overflow-hidden">
-              <img src="/MlogoSiyah.png" alt="Molvess" className="h-5 w-5 object-contain" />
+            <div className="flex h-7 w-7 items-center justify-center overflow-hidden">
+              <img src="/MlogoSiyah.png" alt="Molvess" className="h-7 w-7 object-contain" />
             </div>
             <span className="font-heading text-sm font-semibold text-white">
               Molvess
