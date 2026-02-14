@@ -110,17 +110,15 @@ export default function VideoCard({ video, index }: Props) {
           <motion.div
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
-            className="aspect-video w-full max-w-4xl overflow-hidden rounded-2xl"
+            className="relative aspect-video w-full max-w-4xl overflow-hidden rounded-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <iframe
               src={getYouTubeEmbedUrl(video.embedUrl)}
-              width="100%"
-              height="100%"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-              className="border-0"
-            />
+              className="absolute inset-0 h-full w-full border-0"
+            ></iframe>
           </motion.div>
         </motion.div>
       )}

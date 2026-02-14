@@ -120,12 +120,10 @@ export default function ContentCreator() {
                   {activeVideo === video.$id ? (
                     <iframe
                       src={getYouTubeEmbedUrl(video.embedUrl)}
-                      width="100%"
-                      height="100%"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
-                      className="border-0"
-                    />
+                      className="absolute inset-0 h-full w-full border-0"
+                    ></iframe>
                   ) : (
                     <>
                       {getThumbnail(video.embedUrl, video.thumbnailUrl) ? (
