@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import ReactPlayer from 'react-player';
 import SectionWrapper from './SectionWrapper';
 import { databases, DATABASE_ID, VIDEOS_COLLECTION_ID, Query } from '../lib/appwrite';
 import { getLocalVideos, getHiddenIds } from '../lib/localStore';
+import { getYouTubeEmbedUrl } from '../lib/youtube';
 import type { Video } from '../types';
 import { HiPlay } from 'react-icons/hi';
 
@@ -118,12 +118,13 @@ export default function ContentCreator() {
                 {/* Video / Thumbnail */}
                 <div className="relative aspect-video overflow-hidden">
                   {activeVideo === video.$id ? (
-                    <ReactPlayer
-                      {...{ url: video.embedUrl } as any}
+                    <iframe
+                      src={getYouTubeEmbedUrl(video.embedUrl)}
                       width="100%"
                       height="100%"
-                      playing
-                      controls
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="border-0"
                     />
                   ) : (
                     <>

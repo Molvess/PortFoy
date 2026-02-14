@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import ReactPlayer from 'react-player';
 import { HiPlay, HiX } from 'react-icons/hi';
 import type { Video } from '../types';
+import { getYouTubeEmbedUrl } from '../lib/youtube';
 
 interface Props {
   video: Video;
@@ -113,12 +113,13 @@ export default function VideoCard({ video, index }: Props) {
             className="aspect-video w-full max-w-4xl overflow-hidden rounded-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <ReactPlayer
-              {...{ url: video.embedUrl } as any}
+            <iframe
+              src={getYouTubeEmbedUrl(video.embedUrl)}
               width="100%"
               height="100%"
-              playing
-              controls
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="border-0"
             />
           </motion.div>
         </motion.div>
