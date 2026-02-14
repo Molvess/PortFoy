@@ -12,6 +12,11 @@ import {
 } from '../lib/appwrite';
 import type { Video, Project } from '../types';
 import {
+  getHiddenIds,
+  addHiddenId,
+  resetHiddenIds,
+} from '../lib/hiddenFallbacks';
+import {
   HiPlus,
   HiTrash,
   HiVideoCamera,
@@ -125,6 +130,7 @@ export default function AdminDashboard() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [appwriteOk, setAppwriteOk] = useState(false);
+  const [hiddenIds, setHiddenIds] = useState<string[]>(getHiddenIds());
 
   // Video form
   const [vTitle, setVTitle] = useState('');
@@ -173,15 +179,19 @@ export default function AdminDashboard() {
         tags: (d.tags as string[]) || [],
       }));
 
-      // Appwrite verileri + fallback örnekleri birleştir
-      setVideos([...dbVideos, ...fallbackVideos]);
-      setProjects([...dbProjects, ...fallbackProjects]);
+      // Appwrite verileri + gizlenmemiş fallback örnekleri birleştir
+      const hidden = getHiddenIds();
+      setHiddenIds(hidden);
+      setVideos([...dbVideos, ...fallbackVideos.filter((v) => !hidden.includes(v.$id!))]);
+      setProjects([...dbProjects, ...fallbackProjects.filter((p) => !hidden.includes(p.$id!))]);
       setAppwriteOk(true);
     } catch (err) {
       console.error('Appwrite bağlantısı başarısız:', err);
-      // Sadece fallback verileri göster
-      setVideos(fallbackVideos);
-      setProjects(fallbackProjects);
+      // Sadece gizlenmemiş fallback verileri göster
+      const hidden = getHiddenIds();
+      setHiddenIds(hidden);
+      setVideos(fallbackVideos.filter((v) => !hidden.includes(v.$id!)));
+      setProjects(fallbackProjects.filter((p) => !hidden.includes(p.$id!)));
       setAppwriteOk(false);
     } finally {
       setLoading(false);
@@ -330,10 +340,21 @@ export default function AdminDashboard() {
     fetchData();
   };
 
-  // ── Delete (sadece Appwrite kayıtları) ──
+  // ── Silinen örnekleri geri getir ──
+  const handleRestoreAll = () => {
+    resetHiddenIds();
+    setMessage('Tüm silinen örnekler geri getirildi!');
+    fetchData();
+  };
+
+  // ── Delete ──
   const handleDeleteVideo = async (id: string) => {
     if (isFallbackId(id)) {
-      setMessage('Örnek veriler sadece koddan kaldırılabilir. Appwrite\'a aktarıp sonra silebilirsin.');
+      if (!confirm('Bu örnek videoyu gizlemek istediğinize emin misiniz?')) return;
+      addHiddenId(id);
+      setHiddenIds(getHiddenIds());
+      setVideos((prev) => prev.filter((v) => v.$id !== id));
+      setMessage('Örnek video gizlendi. (Geri getirmek için "Silinenleri Geri Getir" butonunu kullan)');
       return;
     }
     if (!confirm('Bu videoyu silmek istediğinize emin misiniz?')) return;
@@ -348,7 +369,11 @@ export default function AdminDashboard() {
 
   const handleDeleteProject = async (id: string) => {
     if (isFallbackId(id)) {
-      setMessage('Örnek veriler sadece koddan kaldırılabilir. Appwrite\'a aktarıp sonra silebilirsin.');
+      if (!confirm('Bu örnek projeyi gizlemek istediğinize emin misiniz?')) return;
+      addHiddenId(id);
+      setHiddenIds(getHiddenIds());
+      setProjects((prev) => prev.filter((p) => p.$id !== id));
+      setMessage('Örnek proje gizlendi. (Geri getirmek için "Silinenleri Geri Getir" butonunu kullan)');
       return;
     }
     if (!confirm('Bu projeyi silmek istediğinize emin misiniz?')) return;
@@ -445,6 +470,14 @@ export default function AdminDashboard() {
             <HiCode className="h-4 w-4" />
             Projeler ({appwriteCount(projects)} DB + {fallbackCount(projects)} Örnek)
           </button>
+          {hiddenIds.length > 0 && (
+            <button
+              onClick={handleRestoreAll}
+              className="flex items-center gap-2 rounded-xl border border-yellow-500/20 bg-yellow-500/10 px-4 py-3 text-sm font-medium text-yellow-400 transition-all hover:bg-yellow-500/20"
+            >
+              Silinenleri Geri Getir ({hiddenIds.length})
+            </button>
+          )}
           <button
             onClick={fetchData}
             className="ml-auto flex items-center gap-2 rounded-xl bg-dark-card px-4 py-3 text-sm text-text-muted transition-all hover:text-white"
@@ -730,10 +763,10 @@ export default function AdminDashboard() {
                           onClick={() => handleDeleteVideo(v.$id!)}
                           className={`flex h-9 w-9 items-center justify-center rounded-lg transition-all ${
                             isFallbackId(v.$id)
-                              ? 'bg-white/5 text-text-muted cursor-not-allowed'
+                              ? 'bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20'
                               : 'bg-red-500/10 text-red-400 hover:bg-red-500/20'
                           }`}
-                          title={isFallbackId(v.$id) ? 'Örnek veri — silinemez' : 'Sil'}
+                          title={isFallbackId(v.$id) ? 'Örnek videoyu gizle' : 'Sil'}
                         >
                           <HiTrash className="h-4 w-4" />
                         </button>
@@ -807,10 +840,10 @@ export default function AdminDashboard() {
                           onClick={() => handleDeleteProject(p.$id!)}
                           className={`flex h-9 w-9 items-center justify-center rounded-lg transition-all ${
                             isFallbackId(p.$id)
-                              ? 'bg-white/5 text-text-muted cursor-not-allowed'
+                              ? 'bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20'
                               : 'bg-red-500/10 text-red-400 hover:bg-red-500/20'
                           }`}
-                          title={isFallbackId(p.$id) ? 'Örnek veri — silinemez' : 'Sil'}
+                          title={isFallbackId(p.$id) ? 'Örnek projeyi gizle' : 'Sil'}
                         >
                           <HiTrash className="h-4 w-4" />
                         </button>

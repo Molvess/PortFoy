@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import VideoCard from './VideoCard';
 import SectionWrapper from './SectionWrapper';
 import { databases, DATABASE_ID, VIDEOS_COLLECTION_ID, Query } from '../lib/appwrite';
+import { isVideoHidden } from '../lib/hiddenFallbacks';
 import type { Video } from '../types';
 
 // Fallback demo data — Appwrite bağlantısı yoksa
@@ -52,9 +53,10 @@ export default function Showreel() {
           category: d.category as Video['category'],
           thumbnailUrl: d.thumbnailUrl as string | undefined,
         }));
-        setVideos(docs.length > 0 ? docs : fallbackVideos);
+        const visibleFallbacks = fallbackVideos.filter((v) => !isVideoHidden(v.$id!));
+        setVideos(docs.length > 0 ? docs : visibleFallbacks);
       } catch {
-        setVideos(fallbackVideos);
+        setVideos(fallbackVideos.filter((v) => !isVideoHidden(v.$id!)));
       } finally {
         setLoading(false);
       }
