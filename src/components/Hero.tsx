@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 
 const codeLines = [
   'const developer = {',
@@ -50,18 +50,10 @@ export default function Hero() {
     }
   }, [typedLines]);
 
-  const particles = useMemo(
-    () =>
-      Array.from({ length: 30 }, (_, i) => ({
-        id: i,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        size: Math.random() * 3 + 1,
-        duration: Math.random() * 6 + 4,
-        delay: Math.random() * 4,
-      })),
-    []
-  );
+  const particles = Array.from({ length: 30 }, (_, i) => ({
+    id: i, x: (i * 37) % 100, y: (i * 53) % 100, size: (i % 3) + 1,
+    duration: (i % 6) + 4, delay: i % 4,
+  }));
 
   return (
     <section

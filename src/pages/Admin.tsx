@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { account } from '../lib/appwrite';
 import AdminLogin from '../components/AdminLogin';
-import AdminDashboard from '../components/AdminDashboard';
+import AdminDashboard from '../components/AdminDashboardV2';
 
 export default function Admin() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

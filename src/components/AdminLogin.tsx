@@ -22,8 +22,8 @@ export default function AdminLogin({ onLogin }: Props) {
     try {
       await account.createEmailPasswordSession(email, password);
       onLogin();
-    } catch (err: any) {
-      setError(err?.message || 'Giriş başarısız. Lütfen bilgilerinizi kontrol edin.');
+    } catch (err: unknown) {
+      setError((err as Error)?.message || 'Giriş başarısız. Lütfen bilgilerinizi kontrol edin.');
     } finally {
       setLoading(false);
     }

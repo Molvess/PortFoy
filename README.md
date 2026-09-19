@@ -1,3 +1,10 @@
+# Molvess Portfolio
+
+Yönetilebilir React + TypeScript + Appwrite portfolyo uygulaması. Kurulum, migration, ilk admin, GitHub/YouTube, MEGA, production ve yedekleme rehberi: [docs/appwrite-setup.md](docs/appwrite-setup.md).
+
+Yerelde: `npm ci && cp .env.example .env && npm run dev`
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

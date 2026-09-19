@@ -1,10 +1,8 @@
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
-import Showreel from '../components/Showreel';
-import Projects from '../components/Projects';
-import ContentCreator from '../components/ContentCreator';
+import PortfolioSections from '../components/PortfolioSections';
 import Contact from '../components/Contact';
-import Footer from '../components/Footer';
+import Footer from '../components/ManagedFooter';
 
 export default function Home() {
   return (
@@ -12,9 +10,7 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero />
-        <Showreel />
-        <Projects />
-        <ContentCreator />
+        <PortfolioSections />
         <Contact />
       </main>
       <Footer />

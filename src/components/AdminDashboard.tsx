@@ -196,8 +196,8 @@ export default function AdminDashboard() {
       }
       clearVideoForm();
       fetchData();
-    } catch (err: any) {
-      flash('Hata: ' + (err?.message || 'İşlem başarısız'));
+    } catch (err: unknown) {
+      flash('Hata: ' + ((err as Error)?.message || 'İşlem başarısız'));
     } finally {
       setSubmitting(false);
     }
@@ -262,8 +262,8 @@ export default function AdminDashboard() {
       }
       clearProjectForm();
       fetchData();
-    } catch (err: any) {
-      flash('Hata: ' + (err?.message || 'İşlem başarısız'));
+    } catch (err: unknown) {
+      flash('Hata: ' + ((err as Error)?.message || 'İşlem başarısız'));
     } finally {
       setSubmitting(false);
     }
@@ -302,8 +302,8 @@ export default function AdminDashboard() {
       }
       if (editingVideoId === id) clearVideoForm();
       fetchData();
-    } catch (err: any) {
-      flash('Hata: ' + (err?.message || 'Silinemedi'));
+    } catch (err: unknown) {
+      flash('Hata: ' + ((err as Error)?.message || 'Silinemedi'));
     }
   };
 
@@ -327,8 +327,8 @@ export default function AdminDashboard() {
       }
       if (editingProjectId === id) clearProjectForm();
       fetchData();
-    } catch (err: any) {
-      flash('Hata: ' + (err?.message || 'Silinemedi'));
+    } catch (err: unknown) {
+      flash('Hata: ' + ((err as Error)?.message || 'Silinemedi'));
     }
   };
 
@@ -346,8 +346,8 @@ export default function AdminDashboard() {
       if (isLocalId(video.$id)) deleteLocalVideo(video.$id!);
       flash(`"${video.title}" Appwrite'a aktarıldı!`);
       fetchData();
-    } catch (err: any) {
-      flash('Hata: ' + (err?.message || 'Aktarılamadı'));
+    } catch (err: unknown) {
+      flash('Hata: ' + ((err as Error)?.message || 'Aktarılamadı'));
     } finally {
       setSubmitting(false);
     }
@@ -366,8 +366,8 @@ export default function AdminDashboard() {
       if (isLocalId(project.$id)) deleteLocalProject(project.$id!);
       flash(`"${project.name}" Appwrite'a aktarıldı!`);
       fetchData();
-    } catch (err: any) {
-      flash('Hata: ' + (err?.message || 'Aktarılamadı'));
+    } catch (err: unknown) {
+      flash('Hata: ' + ((err as Error)?.message || 'Aktarılamadı'));
     } finally {
       setSubmitting(false);
     }
